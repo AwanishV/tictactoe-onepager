@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Tic Tac Toe</title>
+  
+  <link rel="icon" href="TicTacToe.gif" type="image/gif" sizes="16x16">
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  
+<style>  
+div.box {
+  width:33%;
+  height:150px;
+  border: 1px solid gray;  
+  background-color:lightblue;
+  cursor:pointer;
+  align:center;
+}
+body {
+  #background-color: lightblue;
+}
+pCenter {
+        
+}
+.disabledbutton {
+    pointer-events: none;
+    opacity: 0.9;
+    #background-color: red;
+}
+.classWinningCombination{
+   color:brown;
+}
+
+</style>  
+  
+  
+</head>
+<body>
+
+<div class="container-fluid">
+ <br>
+ <div class="text-center"><h1>Tic Tac Toe</h1></div>
+
+<div class="alert alert-warning alert-dismissible fade" role="alert" align="center" id="matchComplete">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<br>
+<div id="gameCanvas">
+   <div class="row"> 
+      <div class="col-xs-4">
+        <div class="alert alert-success" style="width:40%">
+          <strong>Player1</strong>: X</div>
+        <div class="alert alert-success" style="width:40%">
+          <strong>Player2</strong>: O</div>     
+      </div>
+      <div class="col-xs-4"> 
+          <div class="row">
+            <div class="col-xs-4 box" id="1"></div>
+            <div class="col-xs-4 box" id="2"></div>
+            <div class="col-xs-4 box" id="3"></div>  
+          </div>
+      </div>
+      <div class="col-xs-4"></div>
+   </div>
+   
+   <div class="row"> 
+      <div class="col-xs-4"></div>
+      <div class="col-xs-4"> 
+          <div class="row">
+            <div class="col-xs-4 box" id="4"></div>
+            <div class="col-xs-4 box" id="5"></div>
+            <div class="col-xs-4 box" id="6"></div>  
+          </div>
+      </div>
+      <div class="col-xs-4"></div>
+   </div>
+
+   <div class="row"> 
+      <div class="col-xs-4"></div>
+      <div class="col-xs-4"> 
+          <div class="row">
+            <div class="col-xs-4 box" id="7"></div>
+            <div class="col-xs-4 box" id="8"></div>
+            <div class="col-xs-4 box" id="9"></div>  
+          </div>
+      </div>
+      <div class="col-xs-4"></div>
+   </div>
+</div> 
+ <br>
+ <div align="center"><button type="button" align="center" class="btn btn-success" id="playAgain">Play Again !!</button></div>
+ 
+</div>
+
+</body>
+</html>
+
+<script>
+
+    $(document).ready(function(){
+    
+    $("#playAgain").hide();
+
+    var isPlayer1 = true;
+    var isPlayer2 = false;
+    var p1Arr = [];
+    var p2Arr = [];
+    var winningCombinations = [[1,2,3],[4,5,6],[7,8,9,],[1,4,7],[2,5,8],[3,6,9],[1,5,9],[3,5,7]];
+    
+    var moves = 0;
+    
+      $(".box").click(function(){
+      
+      
+        moves++;    
+        var position = parseInt(this.id);
+        
+        if(isPlayer1){
+            //alert("Setting position for Player 1: "+position);
+            //setPlayer1Position(position);
+            
+            p1Arr.push(position);
+            $(this).html("<H2>X</H2>");
+            $(this).addClass("disabledbutton");
+
+            
+            isPlayer2 = true;
+            isPlayer1 = false;
+            
+            checkForWinner("Player1", p1Arr);
+
+
+        }else{
+            //alert("Setting position for Player 2: "+position);
+            //setPlayer2Position(position);
+            p2Arr.push(position);
+            $(this).html("<H2>O</H2>");
+            $(this).addClass("disabledbutton");
+
+            
+            
+             isPlayer2 = false;
+             isPlayer1 = true;
+
+             checkForWinner("Player2", p2Arr);
+        }
+
+        
+            
+      });
+      
+      function checkForWinner(Player, playerArr)
+      {
+        //alert("Checking Winner...");
+        
+        var winningComb = [];
+        var pN = playerArr;
+        
+        var i;
+        for (i = 0; i < 8; i++) {
+          winningComb = winningCombinations[i];
+          
+          var j;
+          var count = 0;
+          for(j=0; j<3; j++) {
+            if(playerArr.indexOf(winningComb[j]) > -1){
+                count++;
+            }
+          }
+          
+          
+          //let op = winningComb.every(element => pN.indexOf(element) > -1);
+          
+          if(count == 3){
+            //alert(Player+ "wins !!");
+            
+            var i;
+            for (i = 0; i < 3; i++) {
+                $("#"+winningComb[i]).addClass("classWinningCombination");
+            }
+            
+            $("#matchComplete").html("<strong>"+Player+"</strong> wins !!");
+            $("#matchComplete").removeClass("fade");
+            $("#matchComplete").addClass("show");
+            $("#playAgain").show();
+            $("#gameCanvas").addClass("disabledbutton");    
+            return;
+          }
+          
+
+        }
+        
+        //alert(moves);
+        if(moves == 9){
+        
+            $("#matchComplete").html("<strong>Draw</strong> match !!");
+            $("#matchComplete").removeClass("fade");
+            $("#matchComplete").addClass("show");
+            $("#playAgain").show();
+            $("#gameCanvas").addClass("disabledbutton");    
+
+        
+        }
+        
+      }
+      
+      
+      $("#playAgain").click(function(){
+      
+        document.location.href = document.location.href;
+        
+      
+      });
+
+      
+    });
+
+</script>
+
+
